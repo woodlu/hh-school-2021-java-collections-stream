@@ -6,7 +6,9 @@ import common.Task;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
 Задача 3
@@ -15,8 +17,19 @@ import java.util.List;
 public class Task3 implements Task {
 
   // !!! Редактируйте этот метод !!!
+
+  //делаю свой компаратор
   private List<Person> sort(Collection<Person> persons) {
-    return new ArrayList<>(persons);
+
+    return persons.stream().sorted((p1, p2) -> {
+      if (p1.getSecondName().compareTo(p2.getSecondName()) > 0) return 1;
+      if (p1.getSecondName().compareTo(p2.getSecondName()) < 0) return -1;
+      if (p1.getFirstName().compareTo(p2.getFirstName()) > 0) return 1;
+      if (p1.getFirstName().compareTo(p2.getFirstName()) < 0) return -1;
+      if (p1.getCreatedAt().compareTo(p2.getCreatedAt()) > 0) return 1;
+      if (p1.getCreatedAt().compareTo(p2.getCreatedAt()) < 0) return -1;
+      return 0;
+    }).collect(Collectors.toList());
   }
 
   @Override

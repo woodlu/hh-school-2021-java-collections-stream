@@ -4,9 +4,7 @@ import common.Person;
 import common.PersonService;
 import common.Task;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /*
@@ -19,9 +17,16 @@ import java.util.stream.Collectors;
 public class Task1 implements Task {
 
   // !!! Редактируйте этот метод !!!
+
+  //делаем компаратор по индексу человека в personIds
+  //быстродействие: при каждом сравнении нужно получить индексы людей в personIds - поиск занмает n, и сама сортировка nlog(n)
+  //итого n^2log(n)
   private List<Person> findOrderedPersons(List<Integer> personIds) {
     Set<Person> persons = PersonService.findPersons(personIds);
-    return Collections.emptyList();
+
+    return persons.stream()
+            .sorted(Comparator.comparingInt(p -> personIds.indexOf(p.getId())))
+            .collect(Collectors.toList());
   }
 
   @Override
