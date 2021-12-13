@@ -18,18 +18,12 @@ public class Task3 implements Task {
 
   // !!! Редактируйте этот метод !!!
 
-  //делаю свой компаратор
   private List<Person> sort(Collection<Person> persons) {
 
-    return persons.stream().sorted((p1, p2) -> {
-      if (p1.getSecondName().compareTo(p2.getSecondName()) > 0) return 1;
-      if (p1.getSecondName().compareTo(p2.getSecondName()) < 0) return -1;
-      if (p1.getFirstName().compareTo(p2.getFirstName()) > 0) return 1;
-      if (p1.getFirstName().compareTo(p2.getFirstName()) < 0) return -1;
-      if (p1.getCreatedAt().compareTo(p2.getCreatedAt()) > 0) return 1;
-      if (p1.getCreatedAt().compareTo(p2.getCreatedAt()) < 0) return -1;
-      return 0;
-    }).collect(Collectors.toList());
+    return persons.stream().sorted(Comparator.comparing(Person::getSecondName)
+            .thenComparing(Person::getFirstName)
+            .thenComparing(Person::getCreatedAt))
+            .collect(Collectors.toList());
   }
 
   @Override

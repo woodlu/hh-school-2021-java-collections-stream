@@ -5,6 +5,7 @@ import common.PersonService;
 import common.Task;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /*
@@ -17,16 +18,14 @@ import java.util.stream.Collectors;
 public class Task1 implements Task {
 
   // !!! Редактируйте этот метод !!!
-
-  //делаем компаратор по индексу человека в personIds
-  //быстродействие: при каждом сравнении нужно получить индексы людей в personIds - поиск занмает n, и сама сортировка nlog(n)
-  //итого n^2log(n)
+  //делаю мапу, id -> Person, повторных Персонов быть не может т.к. делаем из сета
+  //прохожу по листу доставая из мапы Персонов
+  //всего 2 прохода, O(n)
   private List<Person> findOrderedPersons(List<Integer> personIds) {
     Set<Person> persons = PersonService.findPersons(personIds);
 
-    return persons.stream()
-            .sorted(Comparator.comparingInt(p -> personIds.indexOf(p.getId())))
-            .collect(Collectors.toList());
+    Map<Integer, Person> idPersonMap = persons.stream().collect(Collectors.toMap(Person::getId, person -> person));
+    return personIds.stream().map(idPersonMap::get).collect(Collectors.toList());
   }
 
   @Override

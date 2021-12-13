@@ -19,14 +19,11 @@ P.P.S Здесь ваши правки желательно прокоммент
 public class Task8 implements Task {
 
   //Не хотим выдывать апи нашу фальшивую персону, поэтому конвертим начиная со второй
-
-  //Не совсем понял что здесь нужно сделать
-  //Отдать List без первого элемента либо пустой лист?
+  //persons.remove() изменяет исходный лист
   public List<String> getNames(List<Person> persons) {
     if (persons.size() <= 1) {
       return Collections.emptyList();
     }
-  //  persons.remove(0);
     return persons.stream().skip(1).map(Person::getFirstName).collect(Collectors.toList());
   }
 
@@ -39,30 +36,35 @@ public class Task8 implements Task {
 
   //Для фронтов выдадим полное имя, а то сами не могут
 
-  //укоротил запись
+  //сделал joining
   public String convertPersonToString(Person person) {
-    return person == null ? "" : person.getFirstName() + " " + person.getSecondName();
+    return Stream.of(person.getSecondName(), person.getFirstName(), person.getMiddleName())
+            .filter(Objects::nonNull).collect(Collectors.joining(" "));
   }
 
   // словарь id персоны -> ее имя
 
-  //сделал стримом
+  //сделал чтобы не кидало ексепшн при повторе персона
   public Map<Integer, String> getPersonNames(Collection<Person> persons) {
-    return persons.stream().collect(Collectors.toMap(p -> p.getId(), p -> convertPersonToString(p)));
+    return persons.stream().collect(Collectors.toMap(Person::getId, this::convertPersonToString, (person1, person2) -> person1));
   }
 
   // есть ли совпадающие в двух коллекциях персоны?
 
-  //сделал стримом
+  //запихнул первую коллекцию в сет
+  //добавил разные способы решения
+  //2 прохода по коллекции -> O(n)
   public boolean hasSamePersons(Collection<Person> persons1, Collection<Person> persons2) {
-    return persons1.stream().anyMatch(p1 -> persons2.contains(p1));
+    return persons2.stream().anyMatch(new HashSet<>(persons1)::contains);
   }
 
   //...
 
-  //убрал переменную count
+  //затупил... вместо каунта зачем-то сумму считал
+  //переменную count убрал т.к. непонятно зачем она вообще нужна, она не паблик статик
+  //никакого доступа к ней всё равно нет и кроме этого метода больше нигде не использовалась
   public long countEven(Stream<Integer> numbers) {
-    return numbers.filter(num -> num % 2 == 0).mapToInt(Integer::intValue).sum();
+    return numbers.filter(num -> num % 2 == 0).count();
   }
 
   //???
