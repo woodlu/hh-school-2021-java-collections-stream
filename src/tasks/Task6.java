@@ -5,11 +5,9 @@ import common.Person;
 import common.Task;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
 Имеются
@@ -20,10 +18,17 @@ import java.util.Set;
  */
 public class Task6 implements Task {
 
+  //делаю мапу id региона -> регион
+  //в стриме получаю строку с названием региона и именем персона, собираю в сет
   private Set<String> getPersonDescriptions(Collection<Person> persons,
                                             Map<Integer, Set<Integer>> personAreaIds,
                                             Collection<Area> areas) {
-    return new HashSet<>();
+
+    Map<Integer, Area> idAreaMap = areas.stream().collect(Collectors.toMap(Area::getId, area -> area));
+
+    return persons.stream().flatMap(person -> personAreaIds.get(person.getId()).stream()
+                    .map(areaId -> person.getFirstName() + " - " + idAreaMap.get(areaId).getName()))
+            .collect(Collectors.toSet());
   }
 
   @Override
@@ -37,4 +42,5 @@ public class Task6 implements Task {
     return getPersonDescriptions(persons, personAreaIds, areas)
         .equals(Set.of("Oleg - Moscow", "Oleg - Spb", "Vasya - Spb", "Vasya - Ivanovo"));
   }
+
 }
